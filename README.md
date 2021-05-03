@@ -19,8 +19,11 @@ virtualenv P
 P\Scripts\activate	                
 ----------------------
 Unix/macos
+
 pip install virtualenv
+
 virtualenv P
+
 source P\bin\activate
 ----------------------
 
