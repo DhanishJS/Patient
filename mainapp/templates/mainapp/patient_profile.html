@@ -1,0 +1,1035 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+{% block content %}
+<style type="text/css">
+    .nav.nav-tabs {
+    float: left;
+    display: block;
+    margin-right: 20px;
+    border-bottom: 0;
+    border-right: 1px solid #ddd;
+    padding-right: 15px;
+    }
+    .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+    }
+    .nav-tabs .nav-link.active {
+    color: #495057;
+    background-color: #007bff !important;
+    border-color: transparent !important;
+    }
+    .nav-tabs .nav-link {
+    border: 1px solid transparent;
+    border-top-left-radius: 0rem!important;
+    border-top-right-radius: 0rem!important;
+    }
+    .tab-content>.active {
+    display: block;
+    min-height: 165px;
+    }
+    .nav.nav-tabs {
+    float: left;
+    display: block;
+    margin-right: 20px;
+    border-bottom: 0;
+    border-right: 1px solid transparent;
+    padding-right: 15px;
+    }
+</style>
+<div style="height:70px;"></div>
+{% if messages %}
+    {% for message in messages %}
+        {% if message.tags == "success" %}
+            <div style="color: black; text-align: center;" class="alert alert-success" role="alert">{{message}}</div>
+        {% elif message.tags == "error" %}
+            <div style="color: black; text-align: center;" class="alert alert-danger" role="alert">{{message}}</div>
+        {% else %}
+            <div style="color: black; text-align: center;" class="alert alert-info" role="alert">{{message}}</div>
+        {% endif %}
+    {% endfor %}
+    {% endif %}
+<div class="container">
+    <ul class="nav nav-tabs" id="myTab" role="tablist">
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-controls="profile">My Profile</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#appointments" role="tab" aria-controls="appointments">My Appointments</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#address" role="tab" aria-controls="address">My Address</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#mymedicalrecords" role="tab" aria-controls="mymedicalrecords">My Medical Records</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#mynotes" role="tab" aria-controls="mynotes">My Notes</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#mymedication" role="tab" aria-controls="mymedication">My Medication</a>
+        </li>
+        <br><br>
+
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#mygp" role="tab" aria-controls="mygp">My GP</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#gpmedicalrecords" role="tab" aria-controls="gpmedicalrecords">GP Medical Records</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#gpmedication" role="tab" aria-controls="gpmedication">GP Medication</a>
+        </li>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane" id="profile" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My Profile</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="text" name="UPDATEPATIENTPROFILE" hidden>
+                            <div class="form-group row">
+                                <label for="first_name" class="col-4 col-form-label">First Name</label> 
+                                <div class="col-8">
+                                    <input id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="form-control here" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="last_name" class="col-4 col-form-label">Last Name</label> 
+                                <div class="col-8">
+                                    <input id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="form-control here" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="email" class="col-4 col-form-label">Email</label> 
+                                <div class="col-8">
+                                    <input id="email" name="email" placeholder="Email" class="form-control here" value="{{user.email}}" type="text">
+                                    {% if patient.email_verified %}
+                                        <small style="color:green">Verified</small>
+                                    {% else %}
+                                        <small style="color:red">Not Verified</small>
+                                        <small><a href="#" onclick="verify_email();">Click here to verify.</a></small>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="dob" class="col-4 col-form-label">Date of Birth</label> 
+                                <div class="col-8">
+                                    <input id="dob" name="dob" value="{{patient.date_of_birth}}" class="form-control here" disabled type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="mobile" class="col-4 col-form-label">Mobile</label> 
+                                <div class="col-8">
+                                    <input id="mobile" name="mobile" placeholder="Mobile" value="{{patient.mobile}}" class="form-control here" type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="nhs_number" class="col-4 col-form-label">NHS Number</label> 
+                                <div class="col-8">
+                                    <input id="nhs_number" name="nhs_number" value="{{patient.nhs_number}}" class="form-control here" disabled type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="blood_group" class="col-4 col-form-label">Blood Group</label> 
+                                <div class="col-8">
+                                    <input id="blood_group" name="blood_group" value="{{patient.blood_group}}" class="form-control here" disabled type="text">
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <div class="offset-4 col-8">
+                                    <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="mygp" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My GP</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <h5>{{patient.patient_at.name}}</h5>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Address Line 1</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.address_1}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Address Line 2</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.address_2}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">City</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.city}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">State / Province</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.stateProvince}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Zipcode</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.postalZip}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Country</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.address.country.name}}</label> 
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label class="col-4 col-form-label">Contact Number</label> 
+                            <div class="col-8">
+                                <label class="col-4 col-form-label">{{patient.patient_at.contact_number}}</label> 
+                            </div>
+                        </div>
+                        <hr>
+                        <h5>Opening Hours</h5>
+                        <table class="table">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th scope="col">Weekday</th>
+                                    <th scope="col">Open</th>
+                                    <th scope="col">Close</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>Monday</td>
+                                    <td>{{patient.patient_at.open_times.monday.from}}</td>
+                                    <td>{{patient.patient_at.open_times.monday.to}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Tuesday</td>
+                                    <td>{{patient.patient_at.open_times.tuesday.from}}</td>
+                                    <td>{{patient.patient_at.open_times.tuesday.to}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Wednesday</td>
+                                    <td>{{patient.patient_at.open_times.wednesday.from}}</td>
+                                    <td>{{patient.patient_at.open_times.wednesday.to}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Thursday</td>
+                                    <td>{{patient.patient_at.open_times.thursday.from}}</td>
+                                    <td>{{patient.patient_at.open_times.thursday.to}}</td>
+                                </tr>
+                                <tr>
+                                    <td>Friday</td>
+                                    <td>{{patient.patient_at.open_times.monday.from}}</td>
+                                    <td>{{patient.patient_at.open_times.monday.to}}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="messages" role="tabpanel">.3..</div>
+        <div class="tab-pane" id="address" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My Address</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <form method="post">
+                                {% csrf_token %}
+                                <input type="text" name="UPDATEPATIENTADDRESS" hidden>
+                                <div class="form-group">
+                                    <label for="address_1"><b>Address Line 1</b></label>
+                                    <input type="text" class="form-control" id="address_1" name="address_1" placeholder="Address Line 1" value="{{patient.address.address_1}}" required>
+                                </div>
+                                <div class="form-group">
+                                    <label for="address_2"><b>Address Line 2</b></label>
+                                    <input type="text" class="form-control" id="address_2" name="address_2" placeholder="Address Line 2" value="{{patient.address.address_2}}">
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="city"><b>City</b></label>
+                                            <input type="text" class="form-control" id="city" name="city" placeholder="City" value="{{patient.address.city}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="stateProvince"><b>State / Province</b></label>
+                                            <input type="text" class="form-control" id="stateProvince"
+                                                name="stateProvince" placeholder="State / Province" value="{{patient.address.stateProvince}}">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="postalZip"><b>Postal / Zip Code</b></label>
+                                            <input type="text" class="form-control" id="postalZip"
+                                                name="postalZip" placeholder="Postal / Zip Code" value="{{patient.address.postalZip}}" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-6">
+                                        <div class="form-group">
+                                            <label for="country"><b>Country</b></label>
+                                            <select class="form-control" id="country" name="country">
+                                                {% if patient.address.country %}
+                                                {% for country in countries %}
+                                                {% ifequal country.alpha patient.address.country.alpha %}
+                                                <option value="{{country.alpha}}" selected="selected">{{country.name}}</option>
+                                                {% else %}
+                                                <option value="{{country.alpha}}">{{country.name}}</option>
+                                                {% endifequal %}
+                                                {% endfor %}
+                                                {% else %}
+                                                {% for country in countries %}
+                                                {% ifequal country.alpha "GB" %}
+                                                <option value="{{country.alpha}}" selected="selected">{{country.name}}</option>
+                                                {% else %}
+                                                <option value="{{country.alpha}}">{{country.name}}</option>
+                                                {% endifequal %}
+                                                {% endfor %}
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group row">
+                                    <div class="offset-4 col-8">
+                                        <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="mymedicalrecords" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My Medical Records</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <!-- Upload form. Note enctype attribute! -->
+                            <form method="post" enctype="multipart/form-data">
+                                {% csrf_token %}
+                                <input type="text" name="UPLOADMYMEDICALRECORDDOCUMENTS" hidden>
+                                <p>{{ form.non_field_errors }}</p>
+                                <p>{{ form.docfile.label_tag }} {{ form.docfile.help_text }}</p>
+                                <p>
+                                    {{ form.docfile.errors }}
+                                    {{ form.docfile }}
+                                </p>
+                                <p><input class="btn btn-secondary" type="submit" value="Upload"/></p>
+                            </form>
+                            <!-- List of uploaded documents -->
+                            {% if documents %}
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Modified</th>
+                                            <th scope="col">Members</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for document in documents %}
+                                        <tr id="myTableRow_{{document.id}}">
+                                            <td>{{ document.document.name }}</td>
+                                            <td>{{ document.updated_at }}</td>
+                                            <td>Only you</td>
+                                            <td>
+                                                <a class="btn btn-danger btn-sm" href="#" role="button" onclick="deleteMyMedicalRecords('{{document.id}}');">Delete</a>
+                                                <a href="{{ document.document.url }}" class="btn btn-info btn-sm" download>Download</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                            <p>No documents.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="gpmedicalrecords" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>GP Medical Records</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <!-- List of uploaded documents -->
+                            {% if gp_medical_record_documents %}
+                                <table class="table">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th scope="col">Name</th>
+                                            <th scope="col">Modified</th>
+                                            <th scope="col">Action</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for document in gp_medical_record_documents %}
+                                        <tr id="myTableRow_{{document.id}}">
+                                            <td>{{ document.document.name }}</td>
+                                            <td>{{ document.updated_at }}</td>
+                                            <td>
+                                                <a href="{{ document.document.url }}" class="btn btn-info btn-sm" download>Download</a></td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            {% else %}
+                            <p>No documents.</p>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="mynotes" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My Notes</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="modal fade" id="notesModal" tabindex="-1" role="dialog" aria-labelledby="notesModalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Notes</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="text" name="CREATENOTES" hidden>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="title" placeholder="Title" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="description" placeholder="Description" rows="4" required></textarea>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#notesModal"> Create Notes </button>
+                        <br>
+                        <hr>
+                        {% if notes %}
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th scope="col">Title</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for n in notes %}
+                                <tr>
+                                    <td>{{n.title}}</td>
+                                    <td>{{n.description}}</td>
+                                    <td>
+                                        <div class="dropdown">
+                                            <span class="dropdown-toggle" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                ...
+                                            </span>
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                <a class="dropdown-item" href="#">
+                                                    <form method="post">
+                                                        {% csrf_token %}
+                                                        <input type="text" name="DELETENOTES" hidden>
+                                                        <input type="text" name="notes_id" value="{{n.id}}" hidden>
+                                                        <input type="submit" value="Delete">
+                                                    </form>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="gpmedication" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>GP Prescribed Medication</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        
+                        <br><br>
+                        <div class="row" id="list_of_medications">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane" id="mymedication" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>My Medication</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="modal fade" id="medicationModal" tabindex="-1" role="dialog" aria-labelledby="medicationModalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Medication</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="text" name="Create_My_Current_Medication" hidden>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input type="text" class="form-control" name="name" placeholder="Medication name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <textarea class="form-control" name="description" placeholder="Medication description" rows="4" required></textarea>
+                                            </div>
+                                            <div class="form-group">
+                                                <label>Start Date</label>
+                                                <input type="date" class="form-control" id="start_date" name="start_date" required>
+                                            </div>
+                                            
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#medicationModal"> Add a medication </button>
+                        <br><br>
+                        <div class="row" id="list_of_my_medications">
+                            
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="tab-pane active" id="appointments" role="tabpanel">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-12">
+                        <h4>Appointments</h4>
+                        <hr>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="modal fade" id="appointmentModal" tabindex="-1" role="dialog" aria-labelledby="appointmentModalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Make an appointment</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <form method="post">
+                                        {% csrf_token %}
+                                        <input type="text" name="CreateAppointment" hidden>
+                                        <div class="modal-body">
+                                            <div class="form-group">
+                                                <input type="date" id="appointmentDate" name="appointmentDate" onchange="appointmentDateHandler(event);">
+                                                <select name="appointmentTime" id="appointmentTime" onchange="getAvailableDoctor(event);" hidden>
+                                                </select>
+                                                <select name="availableDoctor" id="availableDoctor" hidden>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" class="btn btn-primary">Save</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal fade" id="cancelAppoinementModal" tabindex="-1" role="dialog" aria-labelledby="cancelAppoinementModalTitle" aria-hidden="true">
+                            <div class="modal-dialog modal-dialog-centered" role="document">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLongTitle">Cancel my upcoming Appointment</h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <ul id="cancelAppointmentList">
+                                        
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#appointmentModal"> Make an appointment </button>
+                        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cancelAppoinementModal"> Cancel my appointment </button>
+                        
+                        <div id='calendar'></div>
+                        
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    function deleteMyMedicalRecords(document_id){
+        $.ajax({
+            data: {
+                'TASK': 'deleteMyMedicalRecords',
+                'document_id': document_id,
+            },
+            dataType: 'json',
+            success: function (response) {
+                $('#myTableRow_'+document_id).remove();
+            }
+        });
+    }
+
+    function verify_email() {
+        $.ajax({
+            data: {
+                'TASK': 'verify_email',
+            },
+            dataType: 'json',
+            success: function (response) {
+                alert(response.message);
+            }
+        });
+    }
+
+    window.onload = function() {
+        var today = new Date();
+        var dd = today.getDate();
+        var mm = today.getMonth()+1; //January is 0!
+        var yyyy = today.getFullYear();
+
+        if(dd<10) {
+            dd='0'+dd
+        }
+
+        if(mm<10) {
+            mm='0'+mm
+        }
+
+        _today = yyyy+'-'+mm+'-'+dd;
+        document.getElementById("start_date").setAttribute("min", _today);
+
+        dd = today.getDate();
+        dd = dd + 1;
+
+        if(dd<10) {
+            dd='0'+dd
+        }
+
+        today = yyyy+'-'+mm+'-'+dd;
+        document.getElementById("appointmentDate").setAttribute("min", today);
+    };
+
+    function Add_My_Medication() {
+        var ml = [];
+
+        {% if my_medication %}
+
+            {% for g in my_medication %}
+
+            ml.push({
+                "pk": '{{g.pk}}',
+                "name": '{{g.name}}',
+                "description": '{{g.description|linebreaks}}',
+                "start_date": '{{g.start_date}}',
+            });
+
+            {% endfor %}
+
+        {% endif %}
+
+        var i,j,temparray,chunk = 2;
+        var nl = [];
+
+        for (i=0,j=ml.length; i<j; i+=chunk) {
+            temparray = ml.slice(i,i+chunk);
+            nl.push(temparray)
+        }
+
+        for (var i = 0; i < nl.length; i++) {
+
+            var second_med_name = nl[i][1] ? nl[i][1].name : null;
+            var second_med_description = nl[i][1] ? nl[i][1].description : null;
+            var second_med_start_date= nl[i][1] ? nl[i][1].start_date : null;
+
+            if (second_med_name == null || second_med_description == null || second_med_start_date == null) {
+
+                $('#list_of_my_medications').append(`
+                    <div class="row">
+
+                        <div class="col-6">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+ nl[i][0].name +`</h5>
+                                    <p class="card-text">`+ nl[i][0].description +`</p>
+                                    <span>Start from: `+ nl[i][0].start_date +`</span>
+                                    <form method="post"> {% csrf_token %} <input type="text" name="DELETE_my_medication" hidden> <input type="text" name="my_medication_id" value="`+ nl[i][0].pk +`" hidden> <input type="submit" value="Delete"> </form>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div><br><br>
+                `);
+
+            } else {
+
+                $('#list_of_my_medications').append(
+                    `<div class="row">
+
+                        <div class="col-6">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+ nl[i][0].name +`</h5>
+                                    <p class="card-text">`+ nl[i][0].description +`</p>
+                                    <span>Start from: `+ nl[i][0].start_date +`</span>
+                                    <form method="post"> {% csrf_token %} <input type="text" name="DELETE_my_medication" hidden> <input type="text" name="my_medication_id" value="`+ nl[i][0].pk +`" hidden> <input type="submit" value="Delete"> </form>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+ nl[i][1].name +`</h5>
+                                    <p class="card-text">`+ nl[i][1].description +`</p>
+                                    <span>Start from: `+ nl[i][1].start_date +`</span>
+                                    <form method="post"> {% csrf_token %} <input type="text" name="DELETE_my_medication" hidden> <input type="text" name="my_medication_id" value="`+ nl[i][1].pk +`" hidden> <input type="submit" value="Delete"> </form>
+                                    <br>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <br><br>`
+                );
+            }
+
+        }
+
+    }
+
+    function Add_GP_Medication() {
+
+        var ml = [];
+
+        {% if gp_medication %}
+
+            {% for g in gp_medication %}
+
+            ml.push({
+                "name": '{{g.name}}',
+                "description": '{{g.description|linebreaks}}',
+                "start_date": '{{g.start_date}}',
+                "prescribed_date": '{{g.prescribed_date}}',
+            });
+                
+            {% endfor %}
+            
+        {% endif %}
+
+        var i,j,temparray,chunk = 2;
+        var nl = [];
+
+        for (i=0,j=ml.length; i<j; i+=chunk) {
+            temparray = ml.slice(i,i+chunk);
+            nl.push(temparray)
+        }
+
+        for (var i = 0; i < nl.length; i++) {
+
+            var second_med_name = nl[i][1] ? nl[i][1].name : null;
+            var second_med_description = nl[i][1] ? nl[i][1].description : null;
+            var second_med_start_date= nl[i][1] ? nl[i][1].start_date : null;
+            var second_med_prescribed_date = nl[i][1] ? nl[i][1].prescribed_date : null;
+
+            if (second_med_name == null || second_med_description == null || second_med_start_date == null || second_med_prescribed_date == null) {
+
+                $('#list_of_medications').append(`
+                        <div class="row">
+
+                            <div class="col-6">
+                                <div class="card" style="width: 18rem;">
+                                    <div class="card-body">
+                                        <h5 class="card-title">`+ nl[i][0].name +`</h5>
+                                        <p class="card-text">`+ nl[i][0].description +`</p>
+                                        <span>Start from: `+ nl[i][0].start_date +`</span>
+                                        <br>
+                                        <span>prescribed at: `+ nl[i][0].prescribed_date +`</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div><br><br>
+                    `);
+            } else {
+                $('#list_of_medications').append(
+                    `<div class="row">
+
+                        <div class="col-6">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+ nl[i][0].name +`</h5>
+                                    <p class="card-text">`+ nl[i][0].description +`</p>
+                                    <span>Start from: `+ nl[i][0].start_date +`</span>
+                                    <br>
+                                    <span>prescribed at: `+ nl[i][0].prescribed_date +`</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="card" style="width: 18rem;">
+                                <div class="card-body">
+                                    <h5 class="card-title">`+ nl[i][1].name +`</h5>
+                                    <p class="card-text">`+ nl[i][1].description +`</p>
+                                    <span>Start from: `+ nl[i][1].start_date +`</span>
+                                    <br>
+                                    <span>prescribed at: `+ nl[i][1].prescribed_date +`</span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                    </div>
+                    <br><br>`
+                );
+            }
+                
+        }
+    }
+
+    function appointmentDateHandler(e) {
+
+        var chosenDate = e.target.value;
+        var day = new Date(chosenDate).getUTCDay();
+
+        var weekday = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"];
+
+        if([6,0].includes(day)) {
+            alert('Weekends not allowed');
+             return;
+        }
+
+        var time_element = document.getElementById("appointmentTime");
+
+        if (!time_element.hasAttribute("hidden"))
+            $("#appointmentTime").attr('hidden','')
+
+        // fetch all the free dates for the chosen date.
+        $.ajax({
+            data: {
+                'TASK': 'fetch_available_dates',
+                'chosenDate': chosenDate,
+                'weekday': weekday[day],
+            },
+            dataType: 'json',
+            success: function (response) {
+                var select = document.getElementById("appointmentTime");
+                var length = select.options.length;
+                for (i = length-1; i >= 0; i--) {
+                    select.options[i] = null;
+                }
+                var free_slot = response.free_slot;
+                for (var i = 0; i<free_slot.length; i++ ) {
+                    $("#appointmentTime").append('<option value="'+free_slot[i]+'">'+free_slot[i]+'</option>')
+                }
+                getAvailableDoctor(e, free_slot[0]);
+            }
+        });
+
+        document.getElementById("appointmentTime").removeAttribute("hidden");
+    }
+
+    function getAvailableDoctor(e, f=null){
+
+        var chosenDate = $('#appointmentDate').val();
+        var chosenTime = $('#appointmentTime').val();
+
+        var doctor_element = document.getElementById("availableDoctor");
+        if (!doctor_element.hasAttribute("hidden"))
+            $("#availableDoctor").attr('hidden','')
+
+        // fetch all the doctors who are free on the chosenDate and chosenTime to book the appointment.
+        $.ajax({
+            data: {
+                'TASK': 'fetch_available_doctors',
+                'chosenDate': chosenDate,
+                'chosenTime': chosenTime,
+            },
+            dataType: 'json',
+            success: function (response) {
+                var select = document.getElementById("availableDoctor");
+                var length = select.options.length;
+                for (i = length-1; i >= 0; i--) {
+                    select.options[i] = null;
+                }
+                var free_doctors = eval(response.free_doctors);
+                for (var i = 0; i<free_doctors.length; i++ ) {
+                    $("#availableDoctor").append(
+                        '<option value="'+free_doctors[i].doctor_object_id+'">'+free_doctors[i].doctor_name+'</option>'
+                        );
+                }
+            }
+        });
+
+        document.getElementById("availableDoctor").removeAttribute("hidden");
+    }
+
+    function renderCalenderView() {
+
+        var event = [];
+
+      {% if appointments %}
+
+      {% for a in appointments %}
+
+         event.push({
+            title: '{{a.title}}',
+            start: '{{a.start}}',
+            end: '{{a.end}}',
+         })
+         
+      {% endfor %}
+         
+      {% endif %}
+
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+         initialView: 'timeGridWeek',
+         headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+         },
+         selectable: true,
+         slotDuration: '00:10:00',
+         businessHours: {
+            daysOfWeek: [ 1, 2, 3, 4, 5 ],
+            startTime: '08:00',
+            endTime: '18:00'
+         },
+         events: event 
+      });
+
+      calendar.render();
+   }
+
+   function CancelAppoinementList() {
+        {% if appointments %}
+        {% for a in appointments %}
+
+        var appointmentTime = '{{a.start}}'.split('T');
+        var date = appointmentTime[0];
+        var time = appointmentTime[1].substring(0, 5);
+
+        $("#cancelAppointmentList").append('<li id="appoinement_object_{{a.pk}}">'+date+' at '+time+' <a href="#" onclick="deleteThisAppointment({{a.pk}});" >Delete</a></li>');
+
+        {% endfor %}
+        {% endif %}
+   }
+
+   function deleteThisAppointment(appointmentId) {
+        if (!confirm("Are you sure you want to cancel this appointment? There's no going back!")) {
+            return;
+        }
+        $.ajax({
+            data: {
+                'TASK': 'delete_this_appointment',
+                'appointmentId': appointmentId,
+            },
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                if(response.status_code == 200) {
+                    console.log("sss");
+                    $( "#appoinement_object_"+appointmentId ).remove();
+                }
+            }
+        });
+   }
+
+    renderCalenderView();
+    Add_GP_Medication();
+    Add_My_Medication();
+    CancelAppoinementList();
+</script>
+{% endblock %}

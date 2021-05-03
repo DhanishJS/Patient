@@ -1,0 +1,152 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+{% block content %}
+<style type="text/css">
+.login-form,.my-form,.nav-link,.navbar-brand{font-family:Raleway,sans-serif}.my-form{padding-top:1.5rem;padding-bottom:1.5rem}.my-form .row{margin-left:0;margin-right:0}.login-form{padding-top:1.5rem;padding-bottom:1.5rem}.login-form .row{margin-left:0;margin-right:0}
+
+
+.bg-c-blue {
+    background: linear-gradient(45deg,#4099ff,#73b4ff);
+}
+
+.bg-c-green {
+    background: linear-gradient(45deg,#2ed8b6,#59e0c5);
+}
+
+.bg-c-yellow {
+    background: linear-gradient(45deg,#FFB64D,#ffcb80);
+}
+
+.bg-c-pink {
+    background: linear-gradient(45deg,#FF5370,#ff869a);
+}
+
+
+.card {
+    border-radius: 5px;
+    -webkit-box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+    box-shadow: 0 1px 2.94px 0.06px rgba(4,26,55,0.16);
+    border: none;
+    margin-bottom: 30px;
+    -webkit-transition: all 0.3s ease-in-out;
+    transition: all 0.3s ease-in-out;
+}
+
+.card .card-block {
+    padding: 25px;
+}
+
+.order-card i {
+    font-size: 26px;
+}
+
+.f-left {
+    float: left;
+}
+
+.f-right {
+    float: right;
+}
+</style>
+<div style="height:70px;"></div>
+<div class="container">
+	<div class="row gutters-sm">
+		<div class="col-md-12">
+			<div style="height:70px;"></div>
+			<div class="jumbotron jumbotron-fluid">
+				<div class="container">
+					<h1 class="display-4">AtEase Features</h1>
+				</div>
+			</div>
+
+			<div class="row">
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-blue order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-40">Personal Profile</h4>
+		                    <p class="m-b-0">Patient can store their personal profile such as thier name, DOB, blood group.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-green order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Book and Cancel appointments</h4>
+		                    <p class="m-b-0">Patients can book and cancel appointments with their registered GP.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-yellow order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Add your medical records</h4>
+		                    <p class="m-b-0">You can add your own medical records. A place where you can always have access to them.</p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+
+		    <div class="row">
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-blue order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-40">Add medication to your profile</h4>
+		                    <p class="m-b-0">You can add your own medications that your on currently.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-green order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Create medical notes</h4>
+		                    <p class="m-b-0">Create notes about the appointment you had with your GP.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-yellow order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Doctors/Nurses add medical records to your account</h4>
+		                    <p class="m-b-0">GP will be able to give you access to your medical records.</p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+
+		    <div class="row">
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-blue order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-40">GP Medication</h4>
+		                    <p class="m-b-0">GP can prescribe medication to patients.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-green order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Share medical records</h4>
+		                    <p class="m-b-0">Patients can download thier medical records.</p>
+		                </div>
+		            </div>
+		        </div>
+        
+		        <div class="col-md-4 col-xl-4">
+		            <div class="card bg-c-yellow order-card">
+		                <div class="card-block">
+		                    <h4 class="m-b-20">Sign Up Now</h4>
+		                    <p class="m-b-0"></p>
+		                </div>
+		            </div>
+		        </div>
+		    </div>
+
+		</div>
+	</div>
+</div>
+{% endblock %}

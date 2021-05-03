@@ -1,0 +1,62 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+{% block content %}
+<div style="height:70px;"></div>
+<div class="container">
+   <div class="jumbotron">
+      <h1 class="display-4">Take control of your health!</h1>
+      <p class="lead">Discover more with AtEase</p>
+      <hr class="my-4">
+      <p class="lead">
+         {% if user.is_authenticated %}
+            <h5 class="display-5">Welcome back, {{request.user.first_name}}</h5>
+         {% else %}
+            <a class="btn btn-primary btn-lg" href="{% url 'mainapp:login' %}" role="button">Login</a>
+            <a class="btn btn-secondary btn-lg" href="{% url 'mainapp:signup' %}" role="button">Register</a>
+         {% endif %}
+      </p>
+   </div>
+   <div class="row gutters-sm">
+      <h3>Articles</h3>
+      <div class="col-md-12" style="background-color:#f5f5f5;">
+         <div class="row justify-content-center align-items-center">
+            <div class="col-sm-auto">
+               <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" src="https://cdn.mos.cms.futurecdn.net/LZL7uRrneo2rdCmzX5yBw7-320-80.jpg" alt="Card image cap">
+                  <div class="card-body">
+                     <a href="https://www.livescience.com/moderna-covid-19-vaccine-college-trial-transmission.html" class="card-text">Can vaccinated people still spread COVID-19? Huge study tackles question.</a>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-auto">
+               <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" src="https://cdn.mos.cms.futurecdn.net/wPGoYvpnzV9YCDC77DSH5L-320-80.jpg" alt="Card image cap">
+                  <div class="card-body">
+                     <a href="https://www.livescience.com/coffee-does-not-stunt-growth.html" class="card-text">Does coffee really stunt kids' growth?</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+         <div class="row justify-content-center align-items-center">
+            <div class="col-sm-auto">
+               <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" src="https://cdn.mos.cms.futurecdn.net/TejWVzjXqpaPzadzuchTBd-320-80.jpg" alt="Card image cap">
+                  <div class="card-body">
+                     <a href="https://www.livescience.com/depression-may-accelerate-cell-aging.html" class="card-text">Cells age prematurely in those with depression, study suggests.</a>
+                  </div>
+               </div>
+            </div>
+            <div class="col-sm-auto">
+               <div class="card" style="width: 18rem;">
+                  <img class="card-img-top" src="https://cdn.mos.cms.futurecdn.net/JHLuVYWQa8vZTVwM25DHfD-320-80.jpg" alt="Card image cap">
+                  <div class="card-body">
+                     <a href="https://www.livescience.com/chemical-processed-foods-preservative-immune-system.html" class="card-text">Chemical found in 1,000 processed foods may harm the immune system.</a>
+                  </div>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
+</div>
+<div style="height:70px;"></div>
+{% endblock %}

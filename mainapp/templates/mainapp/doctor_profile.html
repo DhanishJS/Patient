@@ -1,0 +1,359 @@
+{% extends "mainapp/base.html" %}
+{% load static %}
+{% block content %}
+<style type="text/css">
+   .nav.nav-tabs {
+      float: left;
+      display: block;
+      margin-right: 20px;
+      border-bottom: 0;
+      border-right: 1px solid #ddd;
+      padding-right: 15px;
+   }
+
+   .nav-tabs .nav-link {
+      border: 1px solid transparent;
+      border-top-left-radius: .25rem;
+      border-top-right-radius: .25rem;
+   }
+
+   .nav-tabs .nav-link.active {
+      color: #495057;
+      background-color: #007bff !important;
+      border-color: transparent !important;
+   }
+
+   .nav-tabs .nav-link {
+      border: 1px solid transparent;
+      border-top-left-radius: 0rem!important;
+      border-top-right-radius: 0rem!important;
+   }
+
+   .tab-content>.active {
+      display: block;
+      min-height: 165px;
+   }
+
+   .nav.nav-tabs {
+      float: left;
+      display: block;
+      margin-right: 20px;
+      border-bottom: 0;
+      border-right: 1px solid transparent;
+      padding-right: 15px;
+   }
+</style>
+
+<div style="height:70px;"></div>
+<div class="container">
+   <ul class="nav nav-tabs" id="myTab" role="tablist">
+      <li class="nav-item">
+         <a class="nav-link" data-toggle="tab" href="#profile" role="tab" aria-controls="profile">My Profile</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" data-toggle="tab" href="#mygp" role="tab" aria-controls="mygp">My GP</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link active" data-toggle="tab" href="#appointments" role="tab" aria-controls="appointments">My Appointments</a>
+      </li>
+      <li class="nav-item">
+         <a class="nav-link" href="{% url 'mainapp:gp_view' %}">Go to my GP</a>
+      </li>
+      
+      
+   </ul>
+   <div class="tab-content">
+      <div class="tab-pane" id="profile" role="tabpanel">
+         <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                  <h4>My Profile</h4>
+                  <hr>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <form method="post">
+                     {% csrf_token %}
+                     <input type="text" name="UpdateDoctorProfile" hidden>
+                     <div class="form-group row">
+                        <label for="first_name" class="col-4 col-form-label">First Name</label> 
+                        <div class="col-8">
+                           <input id="first_name" name="first_name" placeholder="First Name" value="{{user.first_name}}" class="form-control here" type="text">
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="last_name" class="col-4 col-form-label">Last Name</label> 
+                        <div class="col-8">
+                           <input id="last_name" name="last_name" placeholder="Last Name" value="{{user.last_name}}" class="form-control here" type="text">
+                        </div>
+                     </div>
+                     <div class="form-group row">
+                        <label for="email" class="col-4 col-form-label">Email</label> 
+                        <div class="col-8">
+                           <input id="email" name="email" placeholder="Email" class="form-control here" value="{{user.email}}" type="text">
+                           {% if doctor.email_verified %}
+                               <small style="color:green">Verified</small>
+                           {% else %}
+                               <small style="color:red">Not Verified</small>
+                               <small><a href="#" onclick="verify_email();">Click here to verify.</a></small>
+                           {% endif %}
+                        </div>
+                     </div>
+                     
+                    
+                    
+                     <div class="form-group row">
+                        <div class="offset-4 col-8">
+                           <button name="submit" type="submit" class="btn btn-primary">Update My Profile</button>
+                        </div>
+                     </div>
+                  </form>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="tab-pane" id="mygp" role="tabpanel">
+         <div class="card-body">
+            <div class="row">
+               <div class="col-md-12">
+                  <h4>My GP</h4>
+                  <hr>
+               </div>
+            </div>
+            <div class="row">
+               <div class="col-md-12">
+                  <h5>{{doctor.works_at.name}}</h5>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">Address Line 1</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.address_1}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">Address Line 2</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.address_2}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">City</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.city}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">State / Province</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.stateProvince}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">Zipcode</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.postalZip}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">Country</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.address.country.name}}</label> 
+                     </div>
+                  </div>
+                  <div class="form-group row">
+                     <label class="col-4 col-form-label">Contact Number</label> 
+                     <div class="col-8">
+                        <label class="col-4 col-form-label">{{doctor.works_at.contact_number}}</label> 
+                     </div>
+                  </div>
+                  <hr>
+                  <h5>Opening Hours</h5>
+                  <table class="table">
+                     <thead class="thead-dark">
+                        <tr>
+                           <th scope="col">Weekday</th>
+                           <th scope="col">Open</th>
+                           <th scope="col">Close</th>
+                        </tr>
+                     </thead>
+                     <tbody>
+                        <tr>
+                           <td>Monday</td>
+                           <td>{{doctor.works_at.open_times.monday.from}}</td>
+                           <td>{{doctor.works_at.open_times.monday.to}}</td>
+                        </tr>
+                        <tr>
+                           <td>Tuesday</td>
+                           <td>{{doctor.works_at.open_times.tuesday.from}}</td>
+                           <td>{{doctor.works_at.open_times.tuesday.to}}</td>
+                        </tr>
+                        <tr>
+                           <td>Wednesday</td>
+                           <td>{{doctor.works_at.open_times.wednesday.from}}</td>
+                           <td>{{doctor.works_at.open_times.wednesday.to}}</td>
+                        </tr>
+                        <tr>
+                           <td>Thursday</td>
+                           <td>{{doctor.works_at.open_times.thursday.from}}</td>
+                           <td>{{doctor.works_at.open_times.thursday.to}}</td>
+                        </tr>
+                        <tr>
+                           <td>Friday</td>
+                           <td>{{doctor.works_at.open_times.friday.from}}</td>
+                           <td>{{doctor.works_at.open_times.friday.to}}</td>
+                        </tr>
+                     </tbody>
+                  </table>
+               </div>
+            </div>
+         </div>
+      </div>
+      <div class="tab-pane active" id="appointments" role="tabpanel">
+         <div class="modal fade" id="cancelAppoinementModal" tabindex="-1" role="dialog" aria-labelledby="cancelAppoinementModalTitle" aria-hidden="true">
+             <div class="modal-dialog modal-dialog-centered" role="document">
+                 <div class="modal-content">
+                     <div class="modal-header">
+                         <h5 class="modal-title" id="exampleModalLongTitle">Cancel my upcoming Appointment</h5>
+                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                         </button>
+                     </div>
+                     <ul id="cancelAppointmentList">
+                         
+                     </ul>
+                 </div>
+             </div>
+         </div>
+         <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#cancelAppoinementModal"> Cancel my appointment </button>
+         <div id='calendar'></div>
+      </div>
+      
+   </div>
+</div>
+
+<script type="text/javascript">
+function verify_email() {
+        $.ajax({
+            data: {
+                'TASK': 'verify_email',
+            },
+            dataType: 'json',
+            success: function (response) {
+                alert(response.message);
+            }
+        });
+    }
+    
+   function deleteMyMedicalRecords(document_id){
+      $.ajax({
+         data: {
+            'TASK': 'deleteMyMedicalRecords',
+            'document_id': document_id,
+         },
+         dataType: 'json',
+         success: function (response) {
+            
+         }
+      });
+   }
+
+   function CancelAppoinementList() {
+        {% if appointments %}
+        {% for a in appointments %}
+
+        var appointmentTime = '{{a.start}}'.split('T');
+        var date = appointmentTime[0];
+        var time = appointmentTime[1].substring(0, 5);
+
+        $("#cancelAppointmentList").append('<li id="appoinement_object_{{a.pk}}">'+date+' at '+time+' <a href="#" onclick="deleteThisAppointment({{a.pk}});" >Delete</a></li>');
+
+        {% endfor %}
+        {% endif %}
+   }
+
+   function deleteThisAppointment(appointmentId) {
+        if (!confirm("Are you sure you want to cancel this appointment? There's no going back!")) {
+            return;
+        }
+        $.ajax({
+            data: {
+                'TASK': 'delete_this_appointment',
+                'appointmentId': appointmentId,
+            },
+            dataType: 'json',
+            success: function (response) {
+                console.log(response);
+                if(response.status_code == 200) {
+                    console.log("sss");
+                    $( "#appoinement_object_"+appointmentId ).remove();
+                }
+            }
+        });
+   }
+
+   function renderCalenderView() {
+
+      var event = [];
+
+      {% if appointments %}
+
+      {% for a in appointments  %}
+
+      console.log('{{a.title}}');
+
+         event.push({
+            title: '{{a.title}}',
+            start: '{{a.start}}',
+            end: '{{a.end}}',
+         })
+         
+      {% endfor %}
+         
+      {% endif %}
+
+      console.log(event);
+
+      var calendarEl = document.getElementById('calendar');
+
+      var calendar = new FullCalendar.Calendar(calendarEl, {
+         initialView: 'timeGridWeek',
+         headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+         },
+         selectable: true,
+         slotDuration: '00:10:00',
+         businessHours: {
+            daysOfWeek: [ 1, 2, 3, 4, 5 ],
+            startTime: '08:00',
+            endTime: '18:00'
+         },
+         events: event //[
+            // {
+            //    title: 'John Wick',
+            //    start: '2021-02-16T16:00:00',
+            //    end: '2021-02-16T16:10:00',
+            // },
+            // {
+            //    title: 'Example2',
+            //    start: '2021-02-16',
+            //    end: '2021-02-20T16:00:00',
+            // },
+            // {
+            //    title: 'Example3',
+            //    start: '2021-02-16',
+            //    end: '2021-02-20T16:00:00',
+            //    url: 'http://google.com/'
+            // },
+         //]
+      });
+
+      calendar.render();
+   }
+
+   renderCalenderView();
+   CancelAppoinementList();
+
+</script>
+{% endblock %}
