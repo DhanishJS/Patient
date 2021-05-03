@@ -12,10 +12,16 @@ In order install all the dependencies on your system. You will need pip, which i
 
 Installing and Activating Virtual Environment
 Here is the command. (The name of the virtual environment can anything)
-Windows 	                        Unix/macOS
-pip install virtualenv	            pip install virtualenv
-virtualenv P 	                    virtualenv P
-P\Scripts\activate	                source P\bin\activate
+
+Windows 	                        
+pip install virtualenv	            
+virtualenv P 	                    
+P\Scripts\activate	                
+----------------------
+Unix/macos
+pip install virtualenv
+virtualenv P
+source P\bin\activate
 
 Now move to the directory extracted project folder “Patient”.	Now move to the directory extracted project folder “Patient”.
 pip install -r requirements.txt	pip install -r requirements.txt
@@ -27,3 +33,5 @@ The final step is to check if manage.py file is located in your current working 
 Development server will run at http://127.0.0.1:8000/. Copy and past the link into browser and AtEase application is now open.
 
 Username and Password for current account in the database are provided in the Final Report Appendix.
+
+Screenshot is also included for more clarification. 
