@@ -22,6 +22,7 @@ Unix/macos
 pip install virtualenv
 virtualenv P
 source P\bin\activate
+----------------------
 
 Now move to the directory extracted project folder “Patient”.	Now move to the directory extracted project folder “Patient”.
 pip install -r requirements.txt	pip install -r requirements.txt
